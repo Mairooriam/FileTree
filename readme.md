@@ -48,5 +48,15 @@ r.RegisterExtensionCallback(".any", FileTreeRenderer::CallbackType::Click, [](co
 r.RegisterExtensionCallback(".any", FileTreeRenderer::CallbackType::DoubleClick, [](const std::filesystem::path& path) {});
 r.RegisterExtensionCallback(".any", FileTreeRenderer::CallbackType::ContextMenu, [](const std::filesystem::path& path) {});
 ```
+## Licenses
+
+This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
+
+### Third-Party Libraries
+
+This project uses the following third-party libraries:
+
+* **Dear ImGui** - MIT License - [View License](Resources/Licenses/imgui-LICENSE.txt)
+* **GLFW** - zlib/libpng License - [View License](Resources/Licenses/glfw-LICENSE.txt)
 
 [screenshot1]: example.png

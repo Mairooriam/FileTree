@@ -1,6 +1,71 @@
 # FileTree
-Learning repository. Imgui filetree with callbacks onClick, onDoubleClick and onContextMenu with extension specific variants. If u wanna use this i recommend stripping away the callback system and actually making something good or using ImGui stuff raw.
+Imgui filetree with for getting selected file and doing action trough contextmenu. Has some badly implemented callbacks onClick, onDoubleClick and onContextMenu with extension specific variants. If u wanna use this i recommend stripping away the callback system and actually making something good or using ImGui stuff raw.
 
+### Why? - Learning
+- abstracting and making API for interraction
+- Callbacks
+- Data structures (trees)
+
+### Goals
+- Filetree that supplies my application selected path / file without giving access to implementation.
+- Ability to add functionality for extension specific selection.
+- File Extension specific contextMenu
+    - Not implemented fully.
+- Change root directory
+
+### TODOs
+- Ability to supply whole contextmenu for whatever file extension
+    - FileTreeRenderer.setCallbackContextMenuConfig()
+- Better way to implement FileTreeRenderer API. Don't like current callback thing.
+- FileTree improvements to implementation.
+- Non Windows specific FileDialog -> Maybe https://github.com/aiekick/ImGuiFileDialog?
+
+# Building
+Dependencies:
+- **Windows** - For WindowsFileDialog.cpp
+- **Dear ImGui** - For Main functionality
+- **GLFW** - for ImGui backend
+- **OpenGL** - for ImGUi backend
+- **C++23** - for std::string.contains(), **C++17** std::filsystem
+
+The project uses CMake to manage dependencies and the build process. 
+
+## Step-by-Step Build Guide
+
+### Prerequisites
+1. Install [CMake](https://cmake.org/download/) (3.10 or newer)
+2. Install a C++23 compatible compiler (e.g., Visual Studio 2022, GCC 13+, or Clang 16+)
+3. Make sure you have OpenGL development libraries installed (typically included with graphics drivers)
+
+### Building with CMake
+
+#### Command Line
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Mairooriam/FileTree.git
+   cd FileTree
+   ```
+
+2. Create a build directory:
+   ```bash
+   mkdir build
+   cd build
+   ```
+
+3. Configure the project:
+   ```bash
+   cmake ..
+   ```
+
+4. Build the project:
+   ```bash
+   cmake --build . --config Release
+   ```
+
+5. Run the example:
+   ```bash
+   ./Mir/example
+   ```
 
 
 # Rendering

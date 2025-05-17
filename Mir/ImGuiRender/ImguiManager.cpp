@@ -13,11 +13,6 @@ void ImguiManager::Render() {
     if (!callbacksInitialized)
     {
 
-        r.RegisterExtensionCallback(".exe", FileTreeRenderer::CallbackType::ContextMenu, [](const std::filesystem::path& path) {
-            std::cout << "[ANY_CONTEXT] " << path.string() << " - Triggers on context menu for any file without specific handler" << std::endl;
-        });
-        
-
         // File callbacks
         r.RegisterFileCallback(FileTreeRenderer::CallbackType::Click, [](const std::filesystem::path& path) {
             std::cout << "[FILE_CLICK] " << path.string() << " - Triggers on any clicked file" << std::endl;

@@ -9,11 +9,14 @@ void ImguiManager::Render() {
     static std::shared_ptr<FileTree> fTree = std::make_shared<FileTree>();
     static FileTreeRenderer r(fTree);
 
-    
-
     static bool callbacksInitialized = false;
     if (!callbacksInitialized)
     {
+
+        r.RegisterExtensionCallback(".exe", FileTreeRenderer::CallbackType::ContextMenu, [](const std::filesystem::path& path) {
+            std::cout << "[ANY_CONTEXT] " << path.string() << " - Triggers on context menu for any file without specific handler" << std::endl;
+        });
+        
 
         // File callbacks
         r.RegisterFileCallback(FileTreeRenderer::CallbackType::Click, [](const std::filesystem::path& path) {
@@ -88,6 +91,8 @@ void ImguiManager::Render() {
         callbacksInitialized = true;
     }
     r.Render();
+
+    
 }
 
 void glfwErrorCallback(int error, const char* description) {

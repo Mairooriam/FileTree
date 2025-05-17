@@ -125,7 +125,8 @@ void FileTreeRenderer::RenderFileTreeContextMenu(FileNode* _node) {
             m_CurrentOpenFile.path = pathStr;
 
         }
-       if (_node->type == FileType::FILE) {
+
+        if (_node->type == FileType::FILE) {
             std::string ext = _node->fullPath.extension().string();
             std::string loweredExt = ext;
             std::transform(loweredExt.begin(), loweredExt.end(), loweredExt.begin(),
@@ -201,14 +202,6 @@ void FileTreeRenderer::HandleDoubleClickNode(FileNode* _node) {
     if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
         fs::path fullPath = m_FileTree->getRootNode()->fullPath / _node->name;
         std::string pathStr = fullPath.string();
-
-       if (_node->type == FileType::FILE) {
-            TriggerFileCallback(CallbackType::ContextMenu, _node->fullPath.string());
-        } 
-        else if (_node->type == FileType::DIR) {
-            TriggerDirectoryCallback(CallbackType::ContextMenu, _node->fullPath.string());
-        }
-        
 
         if (_node->type == FileType::FILE) {
             m_CurrentOpenFile.content = Mir::Utils::File::readFile(fullPath);

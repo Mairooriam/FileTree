@@ -36,6 +36,7 @@ private:
     void RenderOpenFile();
     void RenderFileNode(FileNode* _fileNode);
     void RenderFileTreeContextMenu(FileNode* _node);
+    void RenderMenuBar();
     
     std::string formatFileSize(size_t sizeInBytes);
     

@@ -4,17 +4,21 @@
 #include <memory>
 #include <filesystem>
 
+
+
 void ImguiManager::Render() {
-    
     static std::shared_ptr<FileTree> fTree = std::make_shared<FileTree>();
     static FileTreeRenderer r(fTree);
-
+    
+   
     static bool callbacksInitialized = false;
     if (!callbacksInitialized)
     {
 
         // File callbacks
-        r.RegisterFileCallback(FileTreeRenderer::CallbackType::Click, [](const std::filesystem::path& path) {
+        r.RegisterFileCallback(FileTreeRenderer::CallbackType::Click, 
+            [](const std::filesystem::path& path) 
+        {
             std::cout << "[FILE_CLICK] " << path.string() << " - Triggers on any clicked file" << std::endl;
         });
         

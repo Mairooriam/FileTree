@@ -10,8 +10,13 @@ FileTreeRenderer::FileTreeRenderer(const std::shared_ptr<FileTree>& _fileTree)
 // Rendering START
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 void FileTreeRenderer::Render(){
+    ImGui::ShowDemoWindow();
+    
+    
+    
     auto rootFolder = m_FileTree->getRootFolder().string();
-    ImGui::Begin("File Tree");
+    ImGui::Begin("File Tree", nullptr, ImGuiWindowFlags_MenuBar);
+    RenderMenuBar();
     
     ImGui::PushItemWidth(-1.0f);
     ImGui::InputText("##filepath", &rootFolder, ImGuiInputTextFlags_ReadOnly);
@@ -148,6 +153,69 @@ void FileTreeRenderer::RenderFileTreeContextMenu(FileNode* _node) {
         
         ImGui::EndPopup();
     }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+void FileTreeRenderer::RenderMenuBar() {
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open", "Ctrl+O")) {
+                m_FileTree->setRootFolder(OpenFolderDialog()); 
+            }
+            if (ImGui::BeginMenu("Open Recent"))
+            {
+                if (m_FileTree->getDirHistory().empty()) {
+                    // Display text when no history exists
+                    ImGui::Text("No history");
+                } else {
+                    // Display history items as before
+                    for (auto &&dir : m_FileTree->getDirHistory())
+                    {
+                        if(ImGui::MenuItem(dir.string().c_str())){
+                            m_FileTree->setRootFolder(dir);
+                        };
+                    }
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::Separator();
+            ImGui::EndMenu(); // Added missing EndMenu call for "File" menu
+        }
+        if (ImGui::BeginMenu("Sorting"))
+        {
+            auto filters = m_FileTree->GetAllSortCriteriaStrings();
+            for (const auto& [criteria, label] : filters) // C++17 structured binding
+            {
+                // Create a checkable menu item that shows which option is currently selected
+                bool isSelected = (m_FileTree->getSortCriteria() == criteria);
+                if (ImGui::MenuItem(label.c_str(), NULL, isSelected)) {
+                    // When clicked, update the sort criteria
+                    m_FileTree->setSortCriteria(criteria);
+                }
+            }
+            ImGui::EndMenu(); // This is correct now since we're using BeginMenu
+        }
+            
+        if (ImGui::BeginMenu("Filters"))
+        {
+            ImGui::Text("no filter implemented yet");
+            ImGui::EndMenu(); // This is correct now since we're using BeginMenu
+        }
+        
+        ImGui::EndMenuBar();
+    }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // Rendering END
@@ -193,9 +261,11 @@ std::filesystem::path FileTreeRenderer::OpenFolderDialog() {
     std::filesystem::path result;
     m_fileDialog->SetInitialPath(m_FileTree->getRootFolder());
     m_fileDialog->OpenFolderDialog("Open Folder", [&result](const std::filesystem::path& path) {      
-        if (!path.empty()) { result = path;}
+        if (!path.empty()) { 
+            result = path;
+        }
     });
-
+    
     return result;
 }
 void FileTreeRenderer::HandleDoubleClickNode(FileNode* _node) {

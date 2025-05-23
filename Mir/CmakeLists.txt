@@ -7,7 +7,7 @@ add_executable(example
     FileTree/Rendering/FileTreeRenderer.cpp
     FileTree/Rendering/WindowsFileDialog.cpp
     FileTree/Rendering/ImguiUtils.cpp
-    
+
     utils/Utils.cpp
 )
 
@@ -19,4 +19,31 @@ target_include_directories(example PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     FileTree/
     ImGuiRender/
+    visitor/
+)
+
+
+add_executable(visitorExample
+    VisitorExample.cpp
+    ImGuiRender/ImguiManager.cpp
+
+    FileTree/FileTree.cpp
+    FileTree/Rendering/IFileDialogManager.cpp
+    FileTree/Rendering/FileTreeRenderer.cpp
+    FileTree/Rendering/WindowsFileDialog.cpp
+    FileTree/Rendering/ImguiUtils.cpp
+
+    utils/Utils.cpp
+)
+
+target_link_libraries(visitorExample PRIVATE
+    imgui
+)
+
+
+target_include_directories(visitorExample PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    FileTree/
+    ImGuiRender/
+    visitor/
 )

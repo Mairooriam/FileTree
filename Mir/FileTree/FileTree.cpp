@@ -3,6 +3,23 @@
 #include "FileTree.h"
 #include <functional>
 #include <algorithm>
+
+std::unordered_map<SortCriteria, std::string> FileTree::s_sortCriteriaStrings = {
+    {SortCriteria::TypeThenName, "Type then Name"},
+    {SortCriteria::Extension, "Extension"},
+    {SortCriteria::Name, "Name"},
+    {SortCriteria::Size, "Size"},
+    {SortCriteria::DateModified, "Date Modified"}
+};
+
+std::unordered_map<std::string, SortCriteria> FileTree::s_stringToSortCriteria = {
+    {"Type then Name", SortCriteria::TypeThenName},
+    {"Extension", SortCriteria::Extension},
+    {"Name", SortCriteria::Name},
+    {"Size", SortCriteria::Size},
+    {"Date Modified", SortCriteria::DateModified}
+};
+
 FileTree::~FileTree() {}
 
 FileTree::FileTree() : FileTree(fs::current_path()) {}
@@ -75,6 +92,15 @@ void FileTree::print() {
 void FileTree::setRootFolder(const fs::path& _folder) {
     if (!_folder.empty())
     {
+        auto oldDir = getRootFolder();
+        auto it = std::find(m_dirHistory.begin(), m_dirHistory.end(), oldDir);
+        if (it != m_dirHistory.end()) {
+            m_dirHistory.erase(it);
+        }
+        
+        m_dirHistory.insert(m_dirHistory.begin(), oldDir);
+
+
         m_rootNode = buildFileTree(_folder);
         m_currentNode = m_rootNode.get(); 
     }else{

@@ -1,23 +1,10 @@
-#include "visitor/fileTreeVisitor.h"
+#include "visitor/fileTreeVisitorBase.h"
 #include "FileTree/FileTree.h"
 #include <iostream>
 #include <typeinfo>
 
-void traverseWithVisitor(FileNode* node, FileTreeVisitor& visitor) {
-    if (!node) return;
-    
-    visitor.visit(node);
-    
-    // Visit all children first
-    for (auto& child : node->children) {
-        traverseWithVisitor(child.get(), visitor);
-    }
-    visitor.popNode();
-}
-
 int main() {
-    // Create a sample file tree
-    auto rootDir = std::make_unique<FileTree>("D:\\Projects\\Code Projects\\FileTree\\Mir\\FileTree");
+    auto rootDir = std::make_unique<FileTree>();
 
     std::cout << "===== VARIANT-BASED VISITOR EXAMPLES =====\n\n";
     
@@ -31,8 +18,7 @@ int main() {
         
         // Wrap it in the variant-based FileTreeVisitor
         FileTreeVisitor visitor(collector);
-        
-        traverseWithVisitor(rootDir->getRootNode(), visitor);
+        visitor.traverse(rootDir->getRootNode()); 
         
         // Method 1: Get results directly from a copy of the original visitor
         std::cout << "Found file extensions (from original):\n";
@@ -89,7 +75,7 @@ int main() {
         }
         auto node = builder.getFiltered();
         std::cout << "Builder getter way" << "\n";
-        //std::cout << *node.get() << "\n";
+        std::cout << node.get() << "\n";
         std::cout << "[Filtered Tree]" << "\n";
         // Method 1: Get results from the original builder
         // //auto filteredTree = builder.getFilteredTree();

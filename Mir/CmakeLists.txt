@@ -8,6 +8,9 @@ add_executable(example
     FileTree/Rendering/WindowsFileDialog.cpp
     FileTree/Rendering/ImguiUtils.cpp
 
+
+    FileTree/Visitor/FilteredTreeBuilderVisitor.cpp
+    FileTree/Visitor/ExtensionCollectorVisitor.cpp
     utils/Utils.cpp
 )
 
@@ -32,6 +35,9 @@ add_executable(visitorExample
     FileTree/Rendering/FileTreeRenderer.cpp
     FileTree/Rendering/WindowsFileDialog.cpp
     FileTree/Rendering/ImguiUtils.cpp
+    
+    FileTree/Visitor/FilteredTreeBuilderVisitor.cpp
+    FileTree/Visitor/ExtensionCollectorVisitor.cpp
 
     utils/Utils.cpp
 )

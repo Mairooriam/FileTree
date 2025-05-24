@@ -1,55 +1,35 @@
-add_executable(example
-    main.cpp
+# Create an object library for shared code
+add_library(filetree_common OBJECT
     ImGuiRender/ImguiManager.cpp
-
     FileTree/FileTree.cpp
     FileTree/Rendering/IFileDialogManager.cpp
     FileTree/Rendering/FileTreeRenderer.cpp
     FileTree/Rendering/WindowsFileDialog.cpp
     FileTree/Rendering/ImguiUtils.cpp
-
-
     FileTree/Visitor/FilteredTreeBuilderVisitor.cpp
     FileTree/Visitor/ExtensionCollectorVisitor.cpp
+    FileTree/Visitor/VisibilityFilterVisitor.cpp
+    FileTree/commands/commands.cpp
     utils/Utils.cpp
 )
 
-target_link_libraries(example PRIVATE
-    imgui
-)
-
-target_include_directories(example PRIVATE
+target_include_directories(filetree_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     FileTree/
     ImGuiRender/
     visitor/
+    commands/
 )
 
+target_link_libraries(filetree_common PUBLIC imgui)
 
-add_executable(visitorExample
-    VisitorExample.cpp
-    ImGuiRender/ImguiManager.cpp
+# Create executables using the object library
+add_executable(example main.cpp)
+target_link_libraries(example PRIVATE filetree_common)
 
-    FileTree/FileTree.cpp
-    FileTree/Rendering/IFileDialogManager.cpp
-    FileTree/Rendering/FileTreeRenderer.cpp
-    FileTree/Rendering/WindowsFileDialog.cpp
-    FileTree/Rendering/ImguiUtils.cpp
-    
-    FileTree/Visitor/FilteredTreeBuilderVisitor.cpp
-    FileTree/Visitor/ExtensionCollectorVisitor.cpp
+add_executable(visitorExample VisitorExample.cpp)
+target_link_libraries(visitorExample PRIVATE filetree_common)
 
-    utils/Utils.cpp
-)
-
-target_link_libraries(visitorExample PRIVATE
-    imgui
-)
-
-
-target_include_directories(visitorExample PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    FileTree/
-    ImGuiRender/
-    visitor/
-)
+# Add your new example
+add_executable(visibilityExample visibilityExample.cpp)
+target_link_libraries(visibilityExample PRIVATE filetree_common)

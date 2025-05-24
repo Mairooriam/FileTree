@@ -3,6 +3,23 @@
 #include "imgui_stdlib.h"
 #include "utils/Utils.h"
 #include "ImguiUtils.h"
+#include "visitor/FileTreeVisitorBase.h"
+#include <functional>
+std::function<bool(const FileNode*)> CreateFilterPredicate(const std::vector<std::string>& extensions) {
+    return [extensions](const FileNode* node) -> bool {
+        if (node->type != FileType::FILE) return false;
+        
+        std::filesystem::path filePath(node->fullPath);
+        std::string ext = filePath.extension().string();
+        std::transform(ext.begin(), ext.end(), ext.begin(), 
+            [](unsigned char c) { return std::tolower(c); });
+            
+        // Check if the extension is in the provided vector
+        return std::find(extensions.begin(), extensions.end(), ext) != extensions.end();
+    };
+}
+
+
 FileTreeRenderer::FileTreeRenderer(const std::shared_ptr<FileTree>& _fileTree)
     : m_FileTree{_fileTree}, m_fileDialog{Mir::IFileDialogManager::Create()} {}
 
@@ -12,11 +29,26 @@ FileTreeRenderer::FileTreeRenderer(const std::shared_ptr<FileTree>& _fileTree)
 void FileTreeRenderer::Render(){
     ImGui::ShowDemoWindow();
     
-    
-    
     auto rootFolder = m_FileTree->getRootFolder().string();
     ImGui::Begin("File Tree", nullptr, ImGuiWindowFlags_MenuBar);
     RenderMenuBar();
+    
+    if(ImGui::Button("Filter tree")) {
+        auto cppFilter = CreateFilterPredicate({".cpp", ".h", ".hpp"});
+        VisibilityFilterVisitor filter(cppFilter);
+        FileTreeVisitor visitor(filter);
+        visitor.traverse(m_FileTree->getRootNode());
+    }
+    
+    if(ImGui::Button("Reset Filters")) {
+        auto resetVisibility = [](const FileNode* node) -> bool {
+            const_cast<FileNode*>(node)->isVisible = true;
+            return true; // Continue traversal
+        };
+        VisibilityFilterVisitor filter(resetVisibility);
+        FileTreeVisitor visitor(filter);
+        visitor.traverse(m_FileTree->getRootNode());
+    }
     
     ImGui::PushItemWidth(-1.0f);
     ImGui::InputText("##filepath", &rootFolder, ImGuiInputTextFlags_ReadOnly);
@@ -44,6 +76,10 @@ void FileTreeRenderer::Render(){
 void FileTreeRenderer::RenderFileNode(FileNode* _node) {
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
     
+   if (_node && !_node->isVisible) {
+        return;
+    }
+
     if (_node->type == FileType::FILE || _node->type == FileType::UNKNOWN) {
         flags |= ImGuiTreeNodeFlags_Leaf;       
         flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;  
@@ -211,6 +247,33 @@ void FileTreeRenderer::RenderMenuBar() {
         if (ImGui::BeginMenu("Filters"))
         {
             ImGui::Text("no filter implemented yet");
+            // if (CheckState(StateFlags::))
+            // {
+            //     /* code */
+            // }
+            
+            ExtensionCollectorVisitor collector;
+            FileTreeVisitor visitor(collector);
+            visitor.traverse(m_FileTree->getRootNode());
+            for (auto &&ext : collector.getExtensions())
+            {
+                if (m_selectedExtensions.find(ext) == m_selectedExtensions.end()) {
+                    m_selectedExtensions[ext] = false;
+                }
+                
+                bool isSelected = m_selectedExtensions[ext];
+                
+                if (ImGui::Selectable(ext.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
+                    m_selectedExtensions[ext] = !isSelected;
+                }
+                
+                if (m_selectedExtensions[ext]) {
+                    ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+                    ImGui::Text("✓");
+                }
+            }
+            
+
             ImGui::EndMenu(); // This is correct now since we're using BeginMenu
         }
         

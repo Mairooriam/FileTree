@@ -14,7 +14,7 @@ struct FileNode {
     std::vector<std::unique_ptr<FileNode>> children;
     std::filesystem::path fullPath; 
     std::wstring name;
-    
+    bool isVisible = true; // helper for UI. 
     FileType type = FileType::UNKNOWN;
     size_t size = 0; 
     bool hasUnexpandedChildren = false; 
@@ -35,7 +35,8 @@ struct FileNode {
         fullPath(other.fullPath),
         type(other.type),
         size(other.size),
-        hasUnexpandedChildren(other.hasUnexpandedChildren) 
+        hasUnexpandedChildren(other.hasUnexpandedChildren),
+        isVisible(other.isVisible) 
     {
         // Only deep copy children if requested
         if (copyChildren) {
@@ -55,7 +56,8 @@ struct FileNode {
           name(std::move(other.name)),
           type(other.type),
           size(other.size),
-          hasUnexpandedChildren(other.hasUnexpandedChildren)
+          hasUnexpandedChildren(other.hasUnexpandedChildren),
+        isVisible(other.isVisible)
     {
     }
     
@@ -134,6 +136,12 @@ struct FileNode {
         if (node.type == FileType::FILE) {
             os << " (" << node.size << " bytes)";
         }
+        if (node.isVisible) {
+            os << " [VISIBLE]";
+        } else {
+            os << " [HIDDEN]";
+        }
+        
         
         os << '\n';
         

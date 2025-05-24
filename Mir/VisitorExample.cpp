@@ -75,7 +75,7 @@ int main() {
         }
         auto node = builder.getFiltered();
         std::cout << "Builder getter way" << "\n";
-        std::cout << node.get() << "\n";
+        std::cout << *node.get() << "\n";
         std::cout << "[Filtered Tree]" << "\n";
         // Method 1: Get results from the original builder
         // //auto filteredTree = builder.getFilteredTree();
@@ -109,7 +109,7 @@ int main() {
         
         ExtensionCollectorVisitor collector;
         FileTreeVisitor visitor(collector);
-        
+        visitor.traverse(rootDir->getRootNode()); 
         // Check visitor type using getVisitor<T>()
         if (visitor.getVisitor<ExtensionCollectorVisitor>()) {
             std::cout << "Visitor contains ExtensionCollectorVisitor\n";

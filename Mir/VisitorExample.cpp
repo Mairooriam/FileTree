@@ -12,14 +12,13 @@ void traverseWithVisitor(FileNode* node, FileTreeVisitor& visitor) {
     for (auto& child : node->children) {
         traverseWithVisitor(child.get(), visitor);
     }
-    
     visitor.popNode();
 }
 
 int main() {
     // Create a sample file tree
-    auto rootDir = std::make_unique<FileTree>();
-    
+    auto rootDir = std::make_unique<FileTree>("D:\\Projects\\Code Projects\\FileTree\\Mir\\FileTree");
+
     std::cout << "===== VARIANT-BASED VISITOR EXAMPLES =====\n\n";
     
     // Example 1: Collect all file extensions using the variant-based visitor
@@ -79,10 +78,19 @@ int main() {
         // Wrap it in the variant-based FileTreeVisitor
         FileTreeVisitor visitor(builder); // Now works with copy constructor
         
-        traverseWithVisitor(rootDir->getRootNode(), visitor);
+        visitor.traverse(rootDir->getRootNode());
+        std::cout << "[FINISHED FILTER TREE]" << "\n";
+        auto* extractedbuild = visitor.getVisitor<FilteredTreeBuilderVisitor>();
+        if (extractedbuild) {
+            std::cout << "Successfully accessed the builder from the variant\n";
+            std::unique_ptr<FileNode> filteredTree = extractedbuild->getFiltered();
+            std::cout << "Filtered tree contains C/C++ files:\n";
+            std::cout << *filteredTree.get() << "\n";
+        }
         auto node = builder.getFiltered();
+        std::cout << "Builder getter way" << "\n";
+        //std::cout << *node.get() << "\n";
         std::cout << "[Filtered Tree]" << "\n";
-        std::cout << node << "\n";
         // Method 1: Get results from the original builder
         // //auto filteredTree = builder.getFilteredTree();
         // std::cout << "Filtered tree contains C/C++ files:\n";

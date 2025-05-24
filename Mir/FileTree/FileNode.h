@@ -29,20 +29,23 @@ struct FileNode {
     friend std::wostream& operator<<(std::wostream& os, const FileNode& node) {
         return printToWStream(os, node);
     }
-
-    FileNode(const FileNode& other)
+// Add this constructor to your FileNode class
+    FileNode(const FileNode& other, bool copyChildren = true)
         : name(other.name),
-          fullPath(other.fullPath),
-          type(other.type),
-          size(other.size),
-          hasUnexpandedChildren(other.hasUnexpandedChildren) 
+        fullPath(other.fullPath),
+        type(other.type),
+        size(other.size),
+        hasUnexpandedChildren(other.hasUnexpandedChildren) 
     {
-        // Deep copy children
-        for (const auto& child : other.children) {
-            if (child) {
-                children.push_back(std::make_unique<FileNode>(*child));
+        // Only deep copy children if requested
+        if (copyChildren) {
+            for (const auto& child : other.children) {
+                if (child) {
+                    children.push_back(std::make_unique<FileNode>(*child));
+                }
             }
         }
+        // Otherwise, children vector remains empty
     }
     
     // Add move constructor

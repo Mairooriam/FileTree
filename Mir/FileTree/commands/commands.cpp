@@ -1,6 +1,12 @@
-#include "commands/commands.h"
-#include "mirpch.h"
+#include <iostream>
 
+
+#include "commands/commands.h"
+
+CommandManager& CommandManager::getInstance() {
+    static CommandManager instance;
+    return instance;
+}
 
 void CommandManager::execute(std::unique_ptr<Command> command) {
     if (currentIndex < history.size()) {
@@ -12,6 +18,9 @@ void CommandManager::execute(std::unique_ptr<Command> command) {
     std::cout << "Executed: " << history.back()->getName() << std::endl;
 }
 void CommandManager::undo(){
+
+
+
     if (!canUndo()) {
         std::cout << "Nothing to undo" << std::endl;
         return;
@@ -20,6 +29,7 @@ void CommandManager::undo(){
     history[currentIndex]->undo();
     std::cout << "Undone: " << history[currentIndex]->getName() << std::endl;
 }
+
 
 void CommandManager::redo() {
     if (!canRedo()) {

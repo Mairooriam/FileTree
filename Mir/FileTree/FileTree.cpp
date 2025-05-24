@@ -111,6 +111,8 @@ void FileTree::setRootFolder(const fs::path& _folder) {
 
 
 bool FileTree::expandNode(FileNode* node) {
+    state_Set(StateFlags::STATE_NEW_NODE_EXPLORED);
+
     if (!node || node->type != FileType::DIR || !node->hasUnexpandedChildren) {
         return false;
     }

@@ -10,6 +10,7 @@ add_library(filetree_common OBJECT
     FileTree/Visitor/ExtensionCollectorVisitor.cpp
     FileTree/Visitor/VisibilityFilterVisitor.cpp
     FileTree/commands/commands.cpp
+    FileTree/commands/filetree/FilterCommand.cpp
     utils/Utils.cpp
 )
 
@@ -17,8 +18,9 @@ target_include_directories(filetree_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     FileTree/
     ImGuiRender/
-    visitor/
-    commands/
+    FileTree/visitor
+    FileTree/commands
+    FileTree/commands/filetree/
 )
 
 target_link_libraries(filetree_common PUBLIC imgui)

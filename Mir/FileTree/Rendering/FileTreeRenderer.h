@@ -40,7 +40,7 @@ private:
     void RenderFileNode(FileNode* _fileNode);
     void RenderFileTreeContextMenu(FileNode* _node);
     void RenderMenuBar();
-    
+    std::vector<std::string> getSelectedExtensions();
     std::string formatFileSize(size_t sizeInBytes);
     
     std::filesystem::path OpenFileDialog();
@@ -64,22 +64,5 @@ public:
     void RegisterDirectoryCallback(CallbackType type, NodeCallback callback); 
     void RegisterExtensionCallback(const std::string& extension, CallbackType type, NodeCallback callback); 
 private:
-    // States
-    enum StateFlags : uint32_t {
-        STATE_NONE = 0,
-        STATE_EXTENSIONS_CACHED = 1 << 0,
-        STATE_FILTER_APPLIED = 1 << 1,
-        STATE_TREE_MODIFIED = 1 << 2,
-        STATE_FILE_OPEN = 1 << 3,
-        STATE_PENDING_REFRESH = 1 << 4,
-        STATE_SHOW_HIDDEN_FILES = 1 << 5,
-        STATE_SORTING_CHANGED = 1 << 6,
-    };
-    
-    uint32_t m_stateFlags = STATE_NONE;
-    
-    bool CheckState(StateFlags flag) const { return (m_stateFlags & flag) != 0; }
-    void SetState(StateFlags flag) { m_stateFlags |= flag; }
-    void ClearState(StateFlags flag) { m_stateFlags &= ~flag; }
-    void ToggleState(StateFlags flag) { m_stateFlags ^= flag; }
+
 };

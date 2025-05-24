@@ -27,7 +27,7 @@ public:
         static CommandManager instance;
         return instance;
     }
-
+    static CommandManager& getInstance();
     void execute(std::unique_ptr<Command> command);
     bool canUndo() const { return currentIndex > 0; }
     bool canRedo() const { return currentIndex < history.size(); }

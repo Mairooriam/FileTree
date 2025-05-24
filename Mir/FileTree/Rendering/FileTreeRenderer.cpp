@@ -1,23 +1,15 @@
-#include "FileTreeRenderer.h"
+#include <functional>
 #include "imgui.h"
 #include "imgui_stdlib.h"
-#include "utils/Utils.h"
+
 #include "ImguiUtils.h"
+#include "utils/Utils.h"
 #include "visitor/FileTreeVisitorBase.h"
-#include <functional>
-std::function<bool(const FileNode*)> CreateFilterPredicate(const std::vector<std::string>& extensions) {
-    return [extensions](const FileNode* node) -> bool {
-        if (node->type != FileType::FILE) return false;
-        
-        std::filesystem::path filePath(node->fullPath);
-        std::string ext = filePath.extension().string();
-        std::transform(ext.begin(), ext.end(), ext.begin(), 
-            [](unsigned char c) { return std::tolower(c); });
-            
-        // Check if the extension is in the provided vector
-        return std::find(extensions.begin(), extensions.end(), ext) != extensions.end();
-    };
-}
+#include "FileTreeRenderer.h"
+
+#include "commands/commands.h"
+#include "commands/filetree/FilterCommand.h"
+
 
 
 FileTreeRenderer::FileTreeRenderer(const std::shared_ptr<FileTree>& _fileTree)
@@ -32,29 +24,29 @@ void FileTreeRenderer::Render(){
     auto rootFolder = m_FileTree->getRootFolder().string();
     ImGui::Begin("File Tree", nullptr, ImGuiWindowFlags_MenuBar);
     RenderMenuBar();
-    
-    if(ImGui::Button("Filter tree")) {
-        auto cppFilter = CreateFilterPredicate({".cpp", ".h", ".hpp"});
-        VisibilityFilterVisitor filter(cppFilter);
-        FileTreeVisitor visitor(filter);
+   
+    if (m_FileTree->state_Check(StateFlags::STATE_NEW_NODE_EXPLORED))
+    {
+        ExtensionCollectorVisitor collector;
+        FileTreeVisitor visitor(collector);
         visitor.traverse(m_FileTree->getRootNode());
+        auto& manager = CommandManager::getInstance();
+        auto cmd = std::make_unique<ApplyFilterCmd>(m_FileTree, getSelectedExtensions());
+        manager.execute(std::move(cmd));
+        m_FileTree->state_Clear(StateFlags::STATE_NEW_NODE_EXPLORED);
+    }else if (m_FileTree->state_Check(StateFlags::STATE_FILTERS_UPDATED))
+    {
+        auto& manager = CommandManager::getInstance();
+        auto cmd = std::make_unique<ApplyFilterCmd>(m_FileTree, getSelectedExtensions());
+        manager.execute(std::move(cmd));
+        m_FileTree->state_Clear(StateFlags::STATE_FILTERS_UPDATED);
     }
     
-    if(ImGui::Button("Reset Filters")) {
-        auto resetVisibility = [](const FileNode* node) -> bool {
-            const_cast<FileNode*>(node)->isVisible = true;
-            return true; // Continue traversal
-        };
-        VisibilityFilterVisitor filter(resetVisibility);
-        FileTreeVisitor visitor(filter);
-        visitor.traverse(m_FileTree->getRootNode());
-    }
+
     
-    ImGui::PushItemWidth(-1.0f);
-    ImGui::InputText("##filepath", &rootFolder, ImGuiInputTextFlags_ReadOnly);
-    if (ImGui::IsItemClicked()){ m_FileTree->setRootFolder(OpenFolderDialog()); }
-    ImGui::PopItemWidth();
-    ImGuiUtils::ShowTooltipIfHovered(rootFolder);
+
+
+
     
     ImGui::Separator();
     
@@ -111,12 +103,12 @@ void FileTreeRenderer::RenderFileNode(FileNode* _node) {
     
     // Lazy loading: when a directory node is expanded for the first time
     if (nodeOpen && _node->type == FileType::DIR) {
-        if (_node->hasUnexpandedChildren) {
-            m_FileTree->expandNode(_node);
-        }
         
         for (const auto& child : _node->children) {
             RenderFileNode(child.get());
+        }
+        if (_node->hasUnexpandedChildren) {
+            m_FileTree->expandNode(_node);
         }
         ImGui::TreePop();
     }
@@ -246,15 +238,26 @@ void FileTreeRenderer::RenderMenuBar() {
             
         if (ImGui::BeginMenu("Filters"))
         {
-            ImGui::Text("no filter implemented yet");
-            // if (CheckState(StateFlags::))
-            // {
-            //     /* code */
-            // }
+            if (ImGui::Button("Select All")) {
+                for (auto& [ext, selected] : m_selectedExtensions) {
+                    selected = true;
+                }
+                m_FileTree->state_Set(StateFlags::STATE_FILTERS_UPDATED);
+            }
+            if (ImGui::Button("Deselect All")) {
+                for (auto& [ext, selected] : m_selectedExtensions) {
+                    selected = false;
+                }
+                m_FileTree->state_Set(StateFlags::STATE_FILTERS_UPDATED);
+            }
+            
+            ImGui::Separator();
             
             ExtensionCollectorVisitor collector;
             FileTreeVisitor visitor(collector);
             visitor.traverse(m_FileTree->getRootNode());
+            ImGui::BeginChild("FiltersList", ImVec2(0, 300), true);
+
             for (auto &&ext : collector.getExtensions())
             {
                 if (m_selectedExtensions.find(ext) == m_selectedExtensions.end()) {
@@ -263,22 +266,30 @@ void FileTreeRenderer::RenderMenuBar() {
                 
                 bool isSelected = m_selectedExtensions[ext];
                 
-                if (ImGui::Selectable(ext.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
-                    m_selectedExtensions[ext] = !isSelected;
-                }
-                
-                if (m_selectedExtensions[ext]) {
-                    ImGui::SameLine(ImGui::GetWindowWidth() - 30);
-                    ImGui::Text("✓");
+                // Use checkbox instead of selectable to prevent menu closing
+                if (ImGui::Checkbox(ext.c_str(), &m_selectedExtensions[ext])) {
+                    m_FileTree->state_Set(StateFlags::STATE_FILTERS_UPDATED);
                 }
             }
-            
 
-            ImGui::EndMenu(); // This is correct now since we're using BeginMenu
+            ImGui::EndChild();
+
+
+
+            ImGui::EndMenu();// This is correct now since we're using BeginMenu
         }
         
         ImGui::EndMenuBar();
     }
+}
+std::vector<std::string> FileTreeRenderer::getSelectedExtensions() {
+    std::vector<std::string> selectedExts;
+    for (const auto& [extension, isSelected] : m_selectedExtensions) {
+        if (isSelected) {
+            selectedExts.push_back(extension);
+        }
+    }
+    return selectedExts;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // Rendering END

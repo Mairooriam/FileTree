@@ -19,7 +19,13 @@ enum class SortCriteria {
     Size,                // By file size
     DateModified         // By modification date
 };
+    //TODO: make into state manager thingy? mayube? for now testing here?
+    enum StateFlags : uint32_t {
+        STATE_NONE = 0,
+        STATE_NEW_NODE_EXPLORED = 1 << 0,
+        STATE_FILTERS_UPDATED = 2 << 1,
 
+    };
 class FileTree
 {
 private:
@@ -49,13 +55,20 @@ public:
     fs::path getCurrentPath() const;
     const std::list<fs::path>& getDirHistory() const { return m_dirHistory; }; 
     std::vector<FileNode*> getCurrentChildren() const;
-    SortCriteria getSortCriteria() const { return m_sortCriteria; }
-    static const std::unordered_map<SortCriteria, std::string>& GetAllSortCriteriaStrings() { return s_sortCriteriaStrings; }
+    SortCriteria getSortCriteria() const { return m_sortCriteria; } // TODO: MOVE TO VISITOR / COMMAND
+    static const std::unordered_map<SortCriteria, std::string>& GetAllSortCriteriaStrings() { return s_sortCriteriaStrings; } // TODO: MOVE TO VISITOR / COMMAND
     fs::path getRootFolder() { return m_rootNode.get()->fullPath; }
     FileNode* getRootNode() const { return m_rootNode.get(); }
     
     bool isInitialized() const {return m_rootNode != nullptr;}
-
+public:
+    //TODO: make into state manager thingy? mayube? for now testing here?
+    uint32_t m_stateFlags = STATE_NONE;
+    
+    bool state_Check(StateFlags flag) const { return (m_stateFlags & flag) != 0; }
+    void state_Set(StateFlags flag) { m_stateFlags |= flag; }
+    void state_Clear(StateFlags flag) { m_stateFlags &= ~flag; }
+    void state_Toggle(StateFlags flag) { m_stateFlags ^= flag; }
 
     
 };

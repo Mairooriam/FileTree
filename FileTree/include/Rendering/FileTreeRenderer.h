@@ -1,9 +1,12 @@
 #pragma once
-#include "FileTree.h"
-#include "IFileDialogManager.h"
 #include <functional>
 #include <map>
 #include <set>
+
+#include <FileTree.h>
+#include "FileTree/Rendering/IFileDialogManager.h"
+
+
 enum class FileOpenMode {
     Text,           // Plain text editor
     Binary,         // Hex/binary viewer

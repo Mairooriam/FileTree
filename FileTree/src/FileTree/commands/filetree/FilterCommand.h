@@ -3,9 +3,8 @@
 #include <functional>
 #include <vector>
 
-#include "commands/commands.h"
-#include "FileTree/FileTree.h"
-
+#include "FileTree/commands/commands.h"
+#include <FileTree.h> 
 class ApplyFilterCmd : public Command {
     private:
         std::shared_ptr<FileTree> m_filetree;

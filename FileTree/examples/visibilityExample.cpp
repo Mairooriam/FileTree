@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <string>
 #include "visitor/fileTreeVisitorBase.h"
-#include "FileTree/FileTree.h"
+#include "FileTree.h"
 #include <iostream>
 #include <typeinfo>
 #include <queue>

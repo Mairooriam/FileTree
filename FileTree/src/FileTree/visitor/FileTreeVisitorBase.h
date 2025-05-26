@@ -4,9 +4,9 @@
 #include "FileNode.h"
 
 
-#include "visitor/ExtensionCollectorVisitor.h"
-#include "visitor/FilteredTreeBuilderVisitor.h"
-#include "visitor/VisibilityFilterVisitor.h"
+#include "FileTree/visitor/ExtensionCollectorVisitor.h"
+#include "FileTree/visitor/FilteredTreeBuilderVisitor.h"
+#include "FileTree/visitor/VisibilityFilterVisitor.h"
 
 class FileTreeVisitor {
 private:

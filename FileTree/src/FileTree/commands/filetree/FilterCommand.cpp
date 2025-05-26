@@ -1,7 +1,7 @@
 #include "FilterCommand.h"
 #include <functional>
 #include "FileTree/commands/filetree/FilterCommand.h"
-#include "visitor/FileTreeVisitorBase.h"
+#include "FileTree/visitor/FileTreeVisitorBase.h"
 
 std::function<bool(const FileNode*)> CreateFilterPredicate(
     const std::vector<std::string>& extensions) {

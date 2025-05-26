@@ -1,6 +1,6 @@
 #include "ImguiManager.h"
-#include "FileTree/FileTree.h"
-#include "FileTree/Rendering/FileTreeRenderer.h"
+#include <FileTree.h>
+#include <Rendering/FileTreeRenderer.h>
 #include <memory>
 #include <filesystem>
 

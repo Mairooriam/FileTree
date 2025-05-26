@@ -1,0 +1,25 @@
+add_library(filetree STATIC
+    src/FileTree/FileTree.cpp
+    src/FileTree/FileNode.cpp
+    src/FileTree/Rendering/FileTreeRenderer.cpp
+    src/FileTree/Rendering/IFileDialogManager.cpp
+    src/FileTree/Rendering/WindowsFileDialog.cpp
+    src/FileTree/Rendering/ImguiUtils.cpp
+    src/FileTree/Visitor/FilteredTreeBuilderVisitor.cpp
+    src/FileTree/Visitor/ExtensionCollectorVisitor.cpp
+    src/FileTree/Visitor/VisibilityFilterVisitor.cpp
+    src/FileTree/commands/commands.cpp
+    src/FileTree/commands/filetree/FilterCommand.cpp
+    src/utils/Utils.cpp
+)
+
+target_include_directories(filetree 
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(filetree PUBLIC imgui)
+
+add_subdirectory(examples)

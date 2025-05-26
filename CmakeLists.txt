@@ -2,16 +2,24 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project(Mir VERSION 1.0)
+project(FileTree VERSION 1.0)
+
+option(BUILD_FILETREE_EXAMPLES "Build FileTree examples" ON)
 
 add_subdirectory(External)
 
-# copying example files
-set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/Resources/files")
-set(DESTINATION_DIR "${CMAKE_BINARY_DIR}/Mir")
-add_custom_target(copy_resources ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${RESOURCE_DIR} ${DESTINATION_DIR}
-    COMMENT "Copying resources to binary directory")
+add_subdirectory(FileTree)
 
-add_subdirectory(Mir)
+# Build examples only if requested
+if(BUILD_FILETREE_EXAMPLES)
+    # Resource copying only needed for examples
+    set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/Resources/files")
+    set(DESTINATION_DIR "${CMAKE_BINARY_DIR}/Mir")
+    add_custom_target(copy_resources ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${RESOURCE_DIR} ${DESTINATION_DIR}
+        COMMENT "Copying resources to binary directory")
+        
+    # Add examples
+
+endif()

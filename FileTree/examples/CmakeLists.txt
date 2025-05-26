@@ -1,0 +1,34 @@
+add_executable(filetree_example 
+    main.cpp
+    ImGuiManager.cpp
+    # Add other source files for this example
+)
+
+# Link against the filetree library
+target_link_libraries(filetree_example PRIVATE filetree)
+
+# Ensure the examples can find the filetree headers
+target_include_directories(filetree_example PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src
+)
+
+
+
+# add_executable(visitorExample VisitorExample.cpp ${IMGUI_RENDER_SRC})
+# target_include_directories(visitorExample PRIVATE 
+#     ${IMGUI_RENDER_INCLUDE}
+#     ${CMAKE_SOURCE_DIR}/include  
+# )
+# target_link_libraries(visitorExample PRIVATE filetree)
+
+# add_executable(visibilityExample visibilityExample.cpp ${IMGUI_RENDER_SRC})
+# target_include_directories(visibilityExample PRIVATE 
+#     ${IMGUI_RENDER_INCLUDE}
+#     ${CMAKE_SOURCE_DIR}/include  
+# )
+# target_link_libraries(visibilityExample PRIVATE filetree)
+
+# add_dependencies(example copy_resources)
+# add_dependencies(visitorExample copy_resources)
+# add_dependencies(visibilityExample copy_resources)

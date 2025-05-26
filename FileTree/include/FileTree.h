@@ -6,7 +6,8 @@
 #include <memory>
 #include <list>
 #include <unordered_map>
-#include "FileNode.h"
+
+#include <FileNode.h>
 
 // TODO: double click file not working deep into tree. callback yes but the file editor thing
 

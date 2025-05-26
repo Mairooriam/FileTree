@@ -4,13 +4,13 @@
 
 #include "ImguiUtils.h"
 #include "utils/Utils.h"
-#include "visitor/FileTreeVisitorBase.h"
-#include "FileTreeRenderer.h"
+#include "FileTree/visitor/FileTreeVisitorBase.h"
+#include <Rendering/FileTreeRenderer.h>
 
-#include "commands/commands.h"
-#include "commands/filetree/FilterCommand.h"
+#include "FileTree/commands/commands.h"
+#include "FileTree/commands/filetree/FilterCommand.h"
 
-
+#include "IFileDialogManager.h"
 
 FileTreeRenderer::FileTreeRenderer(const std::shared_ptr<FileTree>& _fileTree)
     : m_FileTree{_fileTree}, m_fileDialog{Mir::IFileDialogManager::Create()} {}

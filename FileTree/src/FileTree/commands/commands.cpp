@@ -1,7 +1,7 @@
 #include <iostream>
 
 
-#include "commands/commands.h"
+#include "FileTree/commands/commands.h"
 
 CommandManager& CommandManager::getInstance() {
     static CommandManager instance;

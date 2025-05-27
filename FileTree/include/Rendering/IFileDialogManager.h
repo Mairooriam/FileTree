@@ -5,7 +5,7 @@
 #include <memory>
 
 using FileDialogCallback = std::function<void(const std::filesystem::path&)>;
-namespace Mir{
+namespace FTree{
     class IFileDialogManager {
     public:
         virtual ~IFileDialogManager() = default;

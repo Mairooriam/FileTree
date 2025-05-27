@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "FilteredTreeBuilderVisitor.h"
-
+namespace FTree {
 std::unique_ptr<FileNode> FilteredTreeBuilderVisitor::getFiltered() {
     if (m_filteredRoot) {
         return std::make_unique<FileNode>(*m_filteredRoot);
@@ -62,3 +62,4 @@ void FilteredTreeBuilderVisitor::popNode() {
         m_currentFilteredNode = nullptr;
     }
 }
+}  // namespace FTree

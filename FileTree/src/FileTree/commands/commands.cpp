@@ -1,8 +1,7 @@
 #include <iostream>
 
-
 #include "FileTree/commands/commands.h"
-
+namespace FTree {
 CommandManager& CommandManager::getInstance() {
     static CommandManager instance;
     return instance;
@@ -17,10 +16,7 @@ void CommandManager::execute(std::unique_ptr<Command> command) {
     currentIndex++;
     std::cout << "Executed: " << history.back()->getName() << std::endl;
 }
-void CommandManager::undo(){
-
-
-
+void CommandManager::undo() {
     if (!canUndo()) {
         std::cout << "Nothing to undo" << std::endl;
         return;
@@ -29,7 +25,6 @@ void CommandManager::undo(){
     history[currentIndex]->undo();
     std::cout << "Undone: " << history[currentIndex]->getName() << std::endl;
 }
-
 
 void CommandManager::redo() {
     if (!canRedo()) {
@@ -44,9 +39,9 @@ void CommandManager::redo() {
 std::ostream& operator<<(std::ostream& os, const CommandManager& manager) {
     os << "Command History:" << std::endl;
     for (size_t i = 0; i < manager.history.size(); i++) {
-        os << i << ": " << manager.history[i]->getName() 
-           << (i == manager.currentIndex - 1 ? " (current)" : "") 
-           << std::endl;
+        os << i << ": " << manager.history[i]->getName()
+           << (i == manager.currentIndex - 1 ? " (current)" : "") << std::endl;
     }
     return os;
 }
+}  // namespace FTree

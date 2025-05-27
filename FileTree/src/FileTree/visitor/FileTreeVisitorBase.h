@@ -3,24 +3,23 @@
 #include <variant>
 #include "FileNode.h"
 
-
 #include "FileTree/visitor/ExtensionCollectorVisitor.h"
 #include "FileTree/visitor/FilteredTreeBuilderVisitor.h"
 #include "FileTree/visitor/VisibilityFilterVisitor.h"
-
+namespace FTree {
 class FileTreeVisitor {
 private:
-    using VisitorVariant = std::variant<
-        std::reference_wrapper<ExtensionCollectorVisitor>, 
-        std::reference_wrapper<FilteredTreeBuilderVisitor>,
-        std::reference_wrapper<VisibilityFilterVisitor> 
-    >;
+    using VisitorVariant = std::variant<std::reference_wrapper<ExtensionCollectorVisitor>,
+                                        std::reference_wrapper<FilteredTreeBuilderVisitor>,
+                                        std::reference_wrapper<VisibilityFilterVisitor>>;
 
     VisitorVariant m_visitor;
 
 public:
     // Keep clean syntax with references instead of move semantics
-    template<typename T, typename = std::enable_if_t<std::is_constructible_v<VisitorVariant, std::reference_wrapper<T>>>>
+    template<typename T,
+             typename = std::enable_if_t<
+                 std::is_constructible_v<VisitorVariant, std::reference_wrapper<T>>>>
     explicit FileTreeVisitor(T& visitor) : m_visitor(std::ref(visitor)) {}
 
     // Copy operations still allowed
@@ -30,7 +29,7 @@ public:
     // Move operations allowed
     FileTreeVisitor(FileTreeVisitor&&) = default;
     FileTreeVisitor& operator=(FileTreeVisitor&&) = default;
- 
+
     void visit(FileNode* node) {
         std::visit([node](auto& visitor) { visitor.get()(node); }, m_visitor);
     }
@@ -70,3 +69,4 @@ public:
         return ref ? &(ref->get()) : nullptr;
     }
 };
+}  // namespace FTree

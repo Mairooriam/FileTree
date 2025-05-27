@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-
+namespace FTree{
 enum class FileType { DIR, FILE, UNKNOWN };
 
 class FileNodeVisitor;
@@ -32,3 +32,4 @@ struct FileNode {
 private:
     friend std::ostream& operator<<(std::ostream& os, const FileNode& node);
 };
+}

@@ -12,7 +12,7 @@
 // TODO: double click file not working deep into tree. callback yes but the file editor thing
 
 namespace fs = std::filesystem;
-
+namespace FTree{
 enum class SortCriteria {
     TypeThenName,        // Default: folders first, then by name
     Extension,           // Group by extension
@@ -73,3 +73,4 @@ public:
 
     
 };
+}

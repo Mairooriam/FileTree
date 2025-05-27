@@ -5,7 +5,7 @@
 #include <filesystem>
 
 
-
+using namespace FTree;
 void ImguiManager::Render() {
     static std::shared_ptr<FileTree> fTree = std::make_shared<FileTree>();
     static FileTreeRenderer r(fTree);

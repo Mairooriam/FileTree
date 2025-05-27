@@ -1,5 +1,5 @@
 #include "ExtensionCollectorVisitor.h"
-
+namespace FTree{
 void ExtensionCollectorVisitor::operator()(FileNode* node) {
     if (node && node->type == FileType::FILE) {
         std::string ext = node->fullPath.extension().string();
@@ -10,4 +10,5 @@ void ExtensionCollectorVisitor::operator()(FileNode* node) {
             m_extensions->insert(ext);
         }
     }
+}
 }

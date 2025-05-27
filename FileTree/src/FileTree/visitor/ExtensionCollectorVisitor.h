@@ -4,12 +4,12 @@
 #include <string>
 
 #include "FileNode.h"
-
+namespace FTree {
 struct ExtensionCollectorVisitor {
     std::shared_ptr<std::set<std::string>> m_extensions;
-    
-    ExtensionCollectorVisitor() 
-        : m_extensions(std::make_shared<std::set<std::string>>()) {}
-    void operator()(FileNode* node); 
+
+    ExtensionCollectorVisitor() : m_extensions(std::make_shared<std::set<std::string>>()) {}
+    void operator()(FileNode* node);
     const std::set<std::string>& getExtensions() const { return *m_extensions; }
 };
+}  // namespace FTree

@@ -2,7 +2,7 @@
 #include <functional>
 #include "FileTree/commands/filetree/FilterCommand.h"
 #include "FileTree/visitor/FileTreeVisitorBase.h"
-
+namespace FTree {
 std::function<bool(const FileNode*)> CreateFilterPredicate(
     const std::vector<std::string>& extensions) {
     return [extensions](const FileNode* node) -> bool {
@@ -23,21 +23,15 @@ bool ResetNodeVisibility(const FileNode* node) {
     return true;  // Continue traversal
 }
 
-
-
 ApplyFilterCmd::ApplyFilterCmd(std::shared_ptr<FileTree> _filetree,
                                const std::vector<std::string>& _extensions)
-    : m_filetree{_filetree}  
-    {
-        if (_extensions.empty())
-        {
-            m_filterPredicate = ResetNodeVisibility;
-        } else{
-
-            m_filterPredicate = CreateFilterPredicate(_extensions);
-        }
-        
+    : m_filetree{_filetree} {
+    if (_extensions.empty()) {
+        m_filterPredicate = ResetNodeVisibility;
+    } else {
+        m_filterPredicate = CreateFilterPredicate(_extensions);
     }
+}
 
 void ApplyFilterCmd::execute() {
     VisibilityFilterVisitor filter(m_filterPredicate);
@@ -50,17 +44,15 @@ void ApplyFilterCmd::undo() {
 }
 
 std::string ApplyFilterCmd::getName() const {
-    return "[ApplyFilterCmd] executed" ;
+    return "[ApplyFilterCmd] executed";
 }
 std::string ResetFilterCmd::getName() const {
     return "[ResetFilterCmd] Executed";
 }
 
-
-ResetFilterCmd::ResetFilterCmd(std::shared_ptr<FileTree> _filetree) :m_filetree(_filetree) {}
+ResetFilterCmd::ResetFilterCmd(std::shared_ptr<FileTree> _filetree) : m_filetree(_filetree) {}
 
 void ResetFilterCmd::execute() {
-
     VisibilityFilterVisitor filter(ResetNodeVisibility);
     FileTreeVisitor visiter(filter);
     visiter.traverse(m_filetree->getRootNode());
@@ -68,3 +60,4 @@ void ResetFilterCmd::execute() {
 void ResetFilterCmd::undo() {
     std::cout << "no undo implemented" << "\n";
 }
+}  // namespace FTree

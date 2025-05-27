@@ -10,7 +10,7 @@ add_library(filetree STATIC
     src/FileTree/Visitor/VisibilityFilterVisitor.cpp
     src/FileTree/commands/commands.cpp
     src/FileTree/commands/filetree/FilterCommand.cpp
-    src/utils/Utils.cpp
+
 )
 
 target_include_directories(filetree 

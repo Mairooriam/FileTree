@@ -43,4 +43,3 @@ if(NOT TARGET imgui)
 endif()
 
 FetchContent_MakeAvailable(glfw)
-target_link_libraries(imgui PUBLIC glfw OpenGL::GL)

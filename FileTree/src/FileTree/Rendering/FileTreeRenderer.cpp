@@ -196,38 +196,38 @@ void FileTreeRenderer::RenderMenuBar() {
         }
         if (ImGui::BeginMenu("Sorting")) {
             auto filters = m_FileTree->GetAllSortCriteriaStrings();
-            for (const auto& [criteria, label] : filters)  // C++17 structured binding
+            for (const auto& [criteria, label] : filters)  
             {
-                // Create a checkable menu item that shows which option is currently selected
                 bool isSelected = (m_FileTree->getSortCriteria() == criteria);
                 if (ImGui::MenuItem(label.c_str(), NULL, isSelected)) {
-                    // When clicked, update the sort criteria
                     m_FileTree->setSortCriteria(criteria);
                 }
             }
-            ImGui::EndMenu();  // This is correct now since we're using BeginMenu
+            ImGui::EndMenu(); 
         }
 
         if (ImGui::BeginMenu("Filters")) {
-            if (ImGui::Button("Select All")) {
+            ImGui::BeginGroup();
+            if (ImGui::Button("A",ImVec2(20,20))) {
                 for (auto& [ext, selected] : m_selectedExtensions) {
                     selected = true;
                 }
                 m_FileTree->state_Set(StateFlags::STATE_FILTERS_UPDATED);
             }
-            if (ImGui::Button("Deselect All")) {
+            ImGui::SameLine();
+            if (ImGui::Button("D",ImVec2(20,20))) {
                 for (auto& [ext, selected] : m_selectedExtensions) {
                     selected = false;
                 }
                 m_FileTree->state_Set(StateFlags::STATE_FILTERS_UPDATED);
             }
-
+            ImGui::EndGroup();
             ImGui::Separator();
 
             ExtensionCollectorVisitor collector;
             FileTreeVisitor visitor(collector);
             visitor.traverse(m_FileTree->getRootNode());
-            ImGui::BeginChild("FiltersList", ImVec2(0, 300), true);
+            ImGui::BeginChild("FiltersList", ImVec2(100, 300), true);
 
             for (auto&& ext : collector.getExtensions()) {
                 if (m_selectedExtensions.find(ext) == m_selectedExtensions.end()) {
@@ -236,15 +236,13 @@ void FileTreeRenderer::RenderMenuBar() {
 
                 bool isSelected = m_selectedExtensions[ext];
 
-                // Use checkbox instead of selectable to prevent menu closing
-                if (ImGui::Checkbox(ext.c_str(), &m_selectedExtensions[ext])) {
+                if (ImGui::Selectable(ext.c_str(), &m_selectedExtensions[ext])) {
                     m_FileTree->state_Set(StateFlags::STATE_FILTERS_UPDATED);
                 }
             }
 
             ImGui::EndChild();
-
-            ImGui::EndMenu();  // This is correct now since we're using BeginMenu
+            ImGui::EndMenu();  
         }
 
         ImGui::EndMenuBar();
